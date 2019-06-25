@@ -10,9 +10,9 @@ transfert() {
 
     if [ ! -z "$i" ] && [ ! -z "$src" ] && [ ! -z "$user" ] && [ ! -z "$ip" ] && [ ! -z "$dest" ] ; then
         if [ "$i" == "O" ]; then
-            rsync -e ssh -avz --delete-after $src $user@$ip:$dest
+            rsync -e ssh -avz --delete-after $src $user@$ip:$dest # lance le tranfert si les 5 parametres sont correctes, en supprimer tout les fichiers du dossier destination
         else
-            rsync -e ssh -avz $src $user@$ip:$dest
+            rsync -e ssh -avz $src $user@$ip:$dest # lance le tranfert si les 5 parametres sont correctes, sans supprimer tout les fichiers
         fi
         exit
     fi
@@ -24,7 +24,7 @@ transfert() {
         exit
     fi
 
-    echo "Voulez restaurer le dossier destination O / N ?"
+    echo "Voulez vous restaurer le dossier destination O / N ?"
     read i
 
     echo "Veuillez saisir votre dossier source"
@@ -37,29 +37,27 @@ transfert() {
     read ip
 
     echo "Veuillez saisir votre dossier destinaiton"
-    read $dest
+    read dest
 
     if [ ! -z "$i" ] && [ ! -z "$src" ] && [ ! -z "$user" ] && [ ! -z "$ip" ] && [ ! -z "$dest" ] ; then
-        if [ "$i" == "O" ]; then
-            rsync -e ssh -avz --delete-after $src $user@$ip:$dest
+        if [ "$i" == "O" ] || [ "$check" == "o" ]; then
+            rsync -e ssh -avz --delete-after $src $user@$ip:$dest # cette ligne lance le transfert avec les paremetres rentré avant a l'utilisateur, et supprime les fichier du dossier dest
         else
-            rsync -e ssh -avz $src $user@$ip:$dest
+            rsync -e ssh -avz $src $user@$ip:$dest # cette ligne lance le transfert avec les paremetres rentré avant a l'utilisateur, sans supprimé les fichiers
         fi
 
     else
-        echo "Vous n'avez pas rentré toutes les valeurs.. Voulez vous continuer avec la commande de base ?"
+        echo "Vous n'avez pas rentré toutes les valeurs.. Voulez vous continuer avec la commande de base ? O / N"
         read check
 
-        if [ "$check" == "O" ]; then
-        	rsync -e ssh -avz /home/source user@ip_du_serveur:/dossier/destination/
+        if [ "$check" == "O" ] || [ "$check" == "o" ]; then
+        	rsync -e ssh -avz /home/source user@ip_du_serveur:/dossier/destination/ # lance le transfert d'example avec les parametres de base
         else
             exit
         fi
     fi
 
 }
-
-
 
 #LANCEMENT DU SCRIPT
 
@@ -77,7 +75,7 @@ show_usage() {
     echo "4: IP SSH"
     echo "5: Dossier destination"
 	echo ""
-    echo ""
+    echo "Vous pouvez aussi rentrer les valeurs apres avec la commande sans parametres * ./script * "
 }
 
 #LANCEMENT DU SCRIPT

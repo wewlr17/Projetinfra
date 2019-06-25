@@ -8,7 +8,17 @@ dest=$5
 
 transfert() {
 
+    echo "Vous voulez restaurer ? O / N"
+    read restore
+
     if [ ! -z "$i" ] && [ ! -z "$src" ] && [ ! -z "$user" ] && [ ! -z "$ip" ] && [ ! -z "$dest" ] ; then
+ 	if [ "$restore" == "O" ] && [ "$i" == "O" ]; then
+	   rsync -e ssh -avz --delete-after $user@$ip:$dest $src
+	elif [ "$restore" == "O" ] && [ "$i" == "1" ]; then
+	   rsync -e ssh -avz $user@$ip:$dest $src
+	fi
+
+
         if [ "$i" == "O" ]; then
             rsync -e ssh -avz --delete-after $src $user@$ip:$dest # lance le tranfert si les 5 parametres sont correctes, en supprimer tout les fichiers du dossier destination
         else
@@ -40,7 +50,12 @@ transfert() {
     read dest
 
     if [ ! -z "$i" ] && [ ! -z "$src" ] && [ ! -z "$user" ] && [ ! -z "$ip" ] && [ ! -z "$dest" ] ; then
-        if [ "$i" == "O" ] || [ "$check" == "o" ]; then
+	if [ "$restore" == "O" ]; then
+	    rsync -e ssh -avz --delete-after $user@$ip:$dest $src
+	    exit
+	fi
+
+        if [ "$i" == "O" ] || [ "$i" == "o" ]; then
             rsync -e ssh -avz --delete-after $src $user@$ip:$dest # cette ligne lance le transfert avec les paremetres rentré avant a l'utilisateur, et supprime les fichier du dossier dest
         else
             rsync -e ssh -avz $src $user@$ip:$dest # cette ligne lance le transfert avec les paremetres rentré avant a l'utilisateur, sans supprimé les fichiers
